@@ -1,0 +1,49 @@
+# my config
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+  docker: circleci/docker@1.4.0
+#firt te1s
+jobs:
+  build-and-push:
+    environment:
+      DOCKER_IMAGE: phuongnam406/nodejs-login-page
+      DOCKER_TAG: latest
+    executor: docker/docker
+    steps:
+      - setup_remote_docker:
+          version: 19.03.13
+      - checkout
+      - docker/check:
+          docker-username: DOCKER_USER
+          docker-password: DOCKER_PASSWORD
+      - docker/build:
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
+      - docker/push:
+          digest-path: /tmp/digest.txt
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
+      - run:
+          command: |
+            echo "Digest is: $(</tmp/digest.txt)"
+  deploy:
+    executor: docker/docker
+    steps:
+      # lease add $SSH_KEY_F1INGERPdRINT, $DEPLOYED_USER@ and DEPLOYED_SERVER to project's environment
+      - add_ssh_keys:
+          fingerprints:
+            - "51:e9:eb:55:7e:c8:1e:d0:fc:91:51:04:1a:fa:b7:c3"
+      - run: ssh  -oStrictHostKeyChecking=no circaleci@147.139.139.218 '/home/namthp/namthp-react-docker/./deploy.sh'
+
+workflows:
+  my-pipeline:
+    jobs:
+      - node/test
+      - build-and-push:
+          requires:
+            - node/test
+          filters:
+            branches:
+              only:
+                - master
