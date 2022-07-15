@@ -2,6 +2,7 @@ FROM node:14-stretch-slim as build
 WORKDIR /app
 COPY . /app
 RUN npm install -f
+RUN nvm install && nvm use
 RUN npm run build
 
 FROM nginx:latest
