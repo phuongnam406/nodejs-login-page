@@ -1,8 +1,8 @@
-FROM node:14-stretch-slim as build
+ FROM node:8 as build
 WORKDIR /app
 COPY . /app
 RUN npm install -f
-RUN npm i npm@latest && npm run build
+#RUN npm i npm@latest && npm run build
 #RUN npm run build
 
 FROM nginx:latest
