@@ -1,4 +1,4 @@
-FROM node:latest as build
+FROM node:14-stretch-slim as build
 WORKDIR /app
 COPY . /app
 RUN npm install -f
